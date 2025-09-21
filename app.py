@@ -14,7 +14,7 @@ CORS(app)  # allows cross-origin requests so we can access it in our Flutter web
 # postgresql://postgres.<ref>:[PASSWORD]@aws-1-eu-central-1.pooler.supabase.com:6543/postgres
 DB_URI = os.environ.get(
     "DATABASE_URL",
-    "postgresql://postgres.nzwplfahwbkefysxglrf:YOUR_PASSWORD@aws-1-eu-central-1.pooler.supabase.com:6543/postgres"
+    "postgresql://postgres.nzwplfahwbkefysxglrf:HOLYFUCKINGSHIT123@aws-1-eu-central-1.pooler.supabase.com:6543/postgres"
 )
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URI
