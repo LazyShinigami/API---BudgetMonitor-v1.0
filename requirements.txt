@@ -2,5 +2,5 @@ flask
 pandas
 gunicorn
 flask-cors
-SQLAlchemy          # CHANGE: ORM for database
+flask_sqlalchemy          # CHANGE: ORM for database
 psycopg2-binary     # CHANGE: PostgreSQL driver

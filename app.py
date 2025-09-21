@@ -88,3 +88,124 @@ def add_record():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
+
+
+
+# === Route: Summary ===
+@app.route('/summary')
+def summary():
+    try:
+        days = int(request.args.get("days", 0))
+        user_id = request.args.get("user_id", "")  # CHANGE: filter by user
+
+        query = Expense.query.filter_by(user_id=user_id)
+        
+        if days in [7, 30]:
+            cutoff = datetime.now().date() - timedelta(days=days)
+            query = query.filter(Expense.date >= cutoff)
+        
+        expenses = query.all()
+        
+        # Total spent
+        total_spent = sum(e.amount for e in expenses)
+        
+        # Total by category
+        total_by_category = {}
+        for e in expenses:
+            cat = e.category
+            total_by_category[cat] = total_by_category.get(cat, 0) + e.amount
+        
+        # Daily average
+        dates = list(set(e.date for e in expenses))
+        daily_avg = total_spent / len(dates) if dates else 0
+
+        return jsonify({
+            'total_spent': total_spent,
+            'total_by_category': total_by_category,
+            'daily_avg': daily_avg,
+            'records_count': len(expenses)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+
+
+# === Route: Trend data ===
+@app.route('/trend')
+def trend():
+    try:
+        days = int(request.args.get("days", 0))
+        user_id = request.args.get("user_id", "")
+
+        query = Expense.query.filter_by(user_id=user_id)
+        if days in [7, 30]:
+            cutoff = datetime.now().date() - timedelta(days=days)
+            query = query.filter(Expense.date >= cutoff)
+        
+        expenses = query.all()
+        trend_data = {}
+        for e in expenses:
+            trend_data[e.date] = trend_data.get(e.date, 0) + e.amount
+        
+        sorted_dates = sorted(trend_data.keys())
+        amounts = [trend_data[d] for d in sorted_dates]
+
+        return jsonify({
+            'dates': [d.strftime("%Y-%m-%d") for d in sorted_dates],
+            'amounts': amounts,
+            'records_count': len(expenses)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+
+
+# === Route: Prediction (placeholder) ===
+@app.route('/prediction')
+def prediction():
+    try:
+        days = int(request.args.get("days", 0))
+        predictionPeriod = request.args.get('predictionPeriod', 'week')
+        user_id = request.args.get("user_id", "")
+
+        query = Expense.query.filter_by(user_id=user_id)
+        if days in [7, 30]:
+            cutoff = datetime.now().date() - timedelta(days=days)
+            query = query.filter(Expense.date >= cutoff)
+
+        expenses = query.all()
+
+        # Average daily spend
+        daily_totals = {}
+        for e in expenses:
+            daily_totals[e.date] = daily_totals.get(e.date, 0) + e.amount
+        
+        avg_daily = sum(daily_totals.values()) / len(daily_totals) if daily_totals else 0
+        period_days = 7 if predictionPeriod == 'week' else 30
+        forecast = avg_daily * period_days
+
+        return jsonify({
+            'predictionPeriod': predictionPeriod,
+            'predicted_total': forecast,
+            'records_count': len(expenses)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+    
+
+
+# Run Flask app
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
