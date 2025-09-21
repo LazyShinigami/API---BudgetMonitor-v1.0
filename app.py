@@ -56,8 +56,19 @@ class Expense(db.Model):
     notes = db.Column(db.String)    
 
 # CHANGE: Create tables (run once)
-with app.app_context():
-    db.create_all()
+# with app.app_context():
+#     db.create_all()
+
+# Safe table creation (only attempt if DB is reachable)
+def create_tables():
+    try:
+        with app.app_context():
+            db.create_all()
+            print("Tables created successfully")
+    except Exception as e:
+        print("Could not create tables at startup:", e)
+
+create_tables()
 
 # ==================================================================================================================
 
