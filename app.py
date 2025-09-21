@@ -34,7 +34,7 @@ app = Flask(__name__)
 CORS(app)  # allows cross-origin requests so we can access it in our Flutter web app
 
 # CHANGE: Use environment variable for DB URI or hardcode temporarily for testing
-DB_URI = os.environ.get("DATABASE_URL", "postgresql://postgres.nzwplfahwbkefysxglrf:HOLYFUCKINGSHIT123@aws-1-eu-central-1.pooler.supabase.com:6543/postgres")
+DB_URI = os.environ.get("DATABASE_URL", "postgresql://postgres.nzwplfahwbkefysxglrf:HOLYFUCKINGSHIT123@aws-1-eu-central-1.pooler.supabase.com:5432/postgres")
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # suppress warning
 
